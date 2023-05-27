@@ -3,48 +3,47 @@ from shutil import which
 import socket
 import time
 
-#host ve port isim ve ağlarının tanımlanması
+# Definition of host and port names and networks
 host_name = "localhost"
 port_name = 7777
 
-#ip ve port numarasının yanyana yazılmasıyla olusturulan iletisim kanalı port'tur.
-#socket olusuturulmasi / host ismi ve port'un socket'e baglanmasi
+# Communication channel creation by combining IP and port number
+# Creating a socket / Binding host name and port to the socket
 internet_socket = socket.socket()
-internet_socket.bind((host_name,port_name))
-#socket'in dinlenmesi icin:
+internet_socket.bind((host_name, port_name))
+# For socket listening:
 internet_socket.listen(1)
 
-#socket.accept metodu ile connection ve adres alınır. bunlarla işlem yapılır.
+# socket.accept method receives the connection and address, which are used for further operations.
 connection, address = internet_socket.accept()
 
-#bir connection olustuguna dair atılan print:
-print(str(address) + " baglanti saglandi.")
+# Print to indicate that a connection is established
+print(str(address) + " connection established.")
 
-#while dongusu: devamlı donecek. client kısmından gelen dataları kontrol edecek.
-#coming_data kısmında konsolda yazdırılacagı ıcın str turune cevrım yapılıyor.
-#connection'un recv metodu var. bu metod donus degerını temsıl eden nesnedir.
-#icerisine belli bir bytesize alır. sonrasında decode edilir.
-#encode olarak gonderılır. decode edılerek alınır.
+# Main loop: continuously checking for data from the client part.
+# The coming_data part is converted to string for printing it on the console.
+# The connection object has the recv method, which represents the return value object.
+# It takes a certain byte size and then decodes it.
+# It is sent as encoded and received by decoding.
 
 while True:
     while True:
         try:
             coming_data = str(connection.recv(1024).decode())
-            print("client sunu yolladi: " + coming_data)
+            print("The client sent: " + coming_data)
             break
-        except ConnectionResetError: #hata alınırsa tekrardan baglantı kurulup saglanılacak.
+        except ConnectionResetError:  # If an error occurs, reconnect and establish the connection again.
             time.sleep(2)
-            connection, address = internet_socket.accept()      
-            print(str(address) + " baglanti saglandi.")
-    if coming_data == "cikis": #cikis yazılırsa program quit ediliyor.
+            connection, address = internet_socket.accept()
+            print(str(address) + " connection established.")
+    if coming_data == "exit":  # If "exit" is written, the program quits.
         break
-    else: #karsi tarafa(client tarafına) mesaj yollanmak istenir.
+    else:  # If a message wants to be sent to the other side (client side).
         message = input("-->")
-        print("Client bekleniyor...") #input'tan sonra client kısmına gecis yaptıgımızı belirten mesaj.
-        connection.send(message.encode()) #client'a mesaj encode'lanıp(sıfrelenıp) atılır.
+        print("Waiting for the client...")  # Message indicating the transition to the client part after the input.
+        connection.send(message.encode())  # The message is encoded (encrypted) and sent to the client.
 
-#1.dongu client'a yollanacak veri(mesaj) ıcın donuyor. 
-#2.dongu client'dan gelen bir veri(mesaj) var mı yok mu sorgusu ıcın donuyor.
-#donguler de bıttıkten sonra baglantı kapatılır.
+# The first loop is for sending data (message) to the client.
+# The second loop is for checking if there is any data (message) from the client.
+# After the loops end, the connection is closed.
 connection.close()
-
