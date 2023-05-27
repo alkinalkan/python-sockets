@@ -3,33 +3,30 @@ import socket
 import time
 
 
-#host ve port isim ve ağlarının tanımlanması
+# Definition of host and port names and networks
 host_name = "localhost"
 port_name = 7777
 
-#ip ve port numarasının yanyana yazılmasıyla olusturulan iletisim kanalı port'tur.
-#socket olusuturulmasi / host ismi ve port'un socket'e baglanmasi
+# Communication channel creation by combining IP and port number
+# Creating a socket / Connecting host name and port to the socket
 internet_socket = socket.socket()
 internet_socket.connect((host_name,port_name))
 
-#bir connection olustuguna dair atılan print:
-print("{}:{} baglanti saglandi.".format(host_name,port_name))
+# Print to indicate that a connection is established
+print("{}:{} connection established.".format(host_name,port_name))
 
-#ilk olay client'tan baslayacagı ıcın bır mesaj yollanılması gerekıyor:
+# Since the first action will start from the client, a message needs to be sent
 message = input("-->")
-print("server bekleniyor...")
+print("Waiting for the server...")
 
 
-while message != "cikis":
-    internet_socket.send(message,encode())
+while message != "exit":
+    internet_socket.send(message.encode())
     coming_data = internet_socket.recv(1024).decode()
 
     print("SERVER: " + coming_data)
 
     message = input("-->")
-    print("Server bekleniyor...") #input'tan sonra server kısmına gecis yaptıgımızı belirten mesaj.
-
-
+    print("Waiting for the server...")  # Message indicating the transition to the server part after the input.
 
 internet_socket.close()
-
