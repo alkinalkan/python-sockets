@@ -1,3 +1,12 @@
+# This Python script demonstrates a basic implementation of a server-client communication system using sockets.
+# The script establishes a connection between a server and a client running on the same machine (localhost)
+# using a specified port number. The server listens for incoming connections, and once a connection is established,
+# it enters a loop to receive data from the client. The received data is printed on the server's console.
+# If the received data is "exit," the server exits the loop and closes the connection.
+# Otherwise, the server prompts the user to input a message, which is then sent to the client after encoding.
+# This communication process alternates between receiving and sending messages until the server receives the "exit" command.
+# If the connection is interrupted, the script attempts to reconnect.
+
 from email import message
 from shutil import which
 import socket
